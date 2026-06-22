@@ -1,0 +1,42 @@
+[
+  {
+    "input": "X 에러 어떻게 고쳤지?",
+    "expect_tool": "search_docs",
+    "expect_source": "troubleshooting.md",
+    "expect_answer_contains": "캐시"
+  },
+  {
+    "input": "API 키 인증이 401로 실패하면 어떻게 해?",
+    "expect_tool": "search_docs",
+    "expect_source": "troubleshooting.md",
+    "expect_answer_contains": "환경변수"
+  },
+  {
+    "input": "인덱스는 어떻게 만들어?",
+    "expect_tool": "search_docs",
+    "expect_source": "setup.md",
+    "expect_answer_contains": "ingest"
+  },
+  {
+    "input": "1024 곱하기 768은?",
+    "expect_tool": "calculator",
+    "expect_answer_contains": "786432"
+  },
+  {
+    "input": "(3 + 4) 곱하기 2는 얼마야?",
+    "expect_tool": "calculator",
+    "expect_answer_contains": "14"
+  },
+  {
+    "input": "그냥 인사야 안녕",
+    "expect_tool": null
+  },
+  {
+    "input": "고마워!",
+    "expect_tool": null
+  },
+  {
+    "input": "이 앱과 전혀 상관없는 화성의 인구는 몇 명이야?",
+    "expect_answer": "모른다고 답해야 함"
+  }
+]

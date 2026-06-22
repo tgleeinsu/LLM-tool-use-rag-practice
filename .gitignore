@@ -1,1 +1,15 @@
 .mcp.json
+
+# API 키 (프로젝트 단위 환경변수)
+.env
+
+# Gradle / 빌드 산출물
+.gradle/
+build/
+
+# RAG 인덱스 산출물 (ingest 로 재생성)
+index/embeddings.json
+
+# IDE
+.idea/
+*.iml

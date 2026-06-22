@@ -6,6 +6,53 @@ RAG를 독립 파이프라인이 아니라 `search_docs`라는 **tool_use 도구
 
 ---
 
+## ▶️ 실행 방법
+
+### 1. API 키 설정 (최초 1회)
+
+프로젝트 루트에 `.env` 파일을 만들어 키 2개를 넣습니다. (`.env`는 git에 커밋되지 않음)
+
+```bash
+cp .env.example .env
+# .env 를 열어 실제 키 입력:
+#   ANTHROPIC_API_KEY=sk-ant-...
+#   VOYAGE_API_KEY=pa-...
+```
+
+### 2. 문서 색인 (최초 1회 + 문서가 바뀔 때마다)
+
+```bash
+./gradlew run --args="ingest"
+# docs/ → 조각내기 → Voyage 임베딩 → index/embeddings.json
+```
+
+### 3. 대화 실행
+
+```bash
+./gradlew run --args="chat"
+```
+
+`>` 프롬프트에 질문 입력 (종료: 빈 줄 또는 `exit`):
+
+| 질문 예시 | 동작 |
+| --- | --- |
+| `X 에러 어떻게 고쳤지?` | `search_docs` 로 문서 검색 |
+| `1024 곱하기 768은?` | `calculator` 로 계산 |
+| `지금 몇 시야?` | `get_date` 로 시각 조회 |
+| `안녕` | 도구 없이 바로 답 |
+
+### 4. 평가 (선택)
+
+```bash
+./gradlew run --args="eval"
+# eval/cases.json 으로 도구선택/검색적중/답변충실 3층위 채점
+```
+
+> **주의**: `chat`/`eval` 전에 반드시 `ingest` 를 먼저 실행해야 합니다 (색인이 없으면 `search_docs` 가 실패).
+> `.env` 자동 주입은 `gradlew run` 에만 적용됩니다. `java -jar` 로 직접 실행하려면 셸 환경변수(`export`)로 키를 설정하세요.
+
+---
+
 ## ✨ 특징
 
 - **자율적 도구 선택** — Claude가 매 턴 어느 도구를 쓸지(혹은 안 쓸지) 스스로 판단
