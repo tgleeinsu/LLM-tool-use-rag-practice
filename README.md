@@ -8,6 +8,18 @@ RAG를 독립 파이프라인이 아니라 `search_docs`라는 **tool_use 도구
 
 ## ▶️ 실행 방법
 
+모든 명령은 **터미널에서 프로젝트 폴더로 이동한 뒤** 실행합니다. (macOS 기본 터미널 / IntelliJ 내장 터미널 모두 가능)
+
+```bash
+cd /path/to/LLM-tool-use-rag-practice
+```
+
+실행 방식은 두 가지입니다.
+- **A. `./gradlew run`** — 별도 빌드 없이 바로 실행. `.env` 의 키가 자동 주입됨. (가장 간단)
+- **B. `java -jar`** — jar 로 빌드해두면 gradle 없이 빠르게 실행. 단 키는 셸 환경변수(`export`)로 설정해야 함.
+
+아래 1~4단계는 방식 A 기준이며, jar 실행은 5단계 참고.
+
 ### 1. API 키 설정 (최초 1회)
 
 프로젝트 루트에 `.env` 파일을 만들어 키 2개를 넣습니다. (`.env`는 git에 커밋되지 않음)
@@ -48,8 +60,34 @@ cp .env.example .env
 # eval/cases.json 으로 도구선택/검색적중/답변충실 3층위 채점
 ```
 
-> **주의**: `chat`/`eval` 전에 반드시 `ingest` 를 먼저 실행해야 합니다 (색인이 없으면 `search_docs` 가 실패).
-> `.env` 자동 주입은 `gradlew run` 에만 적용됩니다. `java -jar` 로 직접 실행하려면 셸 환경변수(`export`)로 키를 설정하세요.
+### 5. jar 로 빌드해서 실행 (방식 B)
+
+gradle 없이 빠르게 실행하고 싶을 때. 먼저 jar 를 빌드합니다 (코드가 바뀌면 다시).
+
+```bash
+./gradlew build
+# 산출물: build/libs/hybrid-assistant.jar
+```
+
+jar 는 `.env` 를 자동으로 읽지 않으므로, **키를 셸 환경변수로 export** 합니다.
+
+```bash
+export ANTHROPIC_API_KEY="sk-ant-..."
+export VOYAGE_API_KEY="pa-..."
+```
+
+그다음 모드를 인자로 넘겨 실행합니다. (ingest 산출물 `index/embeddings.json` 을 찾으려면 **프로젝트 루트에서 실행**)
+
+```bash
+java -jar build/libs/hybrid-assistant.jar ingest   # 색인
+java -jar build/libs/hybrid-assistant.jar chat      # 대화
+java -jar build/libs/hybrid-assistant.jar eval      # 평가
+```
+
+> **주의**
+> - `chat`/`eval` 전에 반드시 `ingest` 를 먼저 실행해야 합니다 (색인이 없으면 `search_docs` 가 실패).
+> - `.env` 자동 주입은 방식 A(`./gradlew run`)에만 적용됩니다. 방식 B(`java -jar`)는 셸 환경변수(`export`)로 키를 설정하세요.
+> - `java -jar` 는 색인 파일을 상대경로(`index/embeddings.json`)로 찾으므로 프로젝트 루트에서 실행하세요.
 
 ---
 
