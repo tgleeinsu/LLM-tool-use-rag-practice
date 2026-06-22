@@ -33,10 +33,24 @@ cp .env.example .env
 
 ### 2. 문서 색인 (최초 1회 + 문서가 바뀔 때마다)
 
+> **이 앱의 검색 범위 = 프로젝트 내 `docs/` 폴더의 문서들** 입니다.
+> `search_docs` 도구는 임의 경로의 파일을 그 자리에서 읽는 게 아니라, **미리 `docs/` 를 색인해 둔 내용에서만** 의미 검색합니다.
+> 따라서 새 문서를 검색하게 하려면 **① `docs/` 에 파일을 넣고 → ② 아래 `ingest` 를 다시 실행** 해야 합니다.
+
 ```bash
 ./gradlew run --args="ingest"
-# docs/ → 조각내기 → Voyage 임베딩 → index/embeddings.json
+# docs/ 의 .md / .txt → 조각내기 → Voyage 임베딩 → index/embeddings.json
 ```
+
+**예시 — 새 문서 추가하기**
+
+```bash
+cp /어딘가/my-notes.md docs/          # ① docs/ 에 복사 (.md 또는 .txt)
+./gradlew run --args="ingest"          # ② 재색인 → 이제 검색 가능
+```
+
+> `docs/` 폴더 위치: 프로젝트 루트의 `docs/` (예: `LLM-tool-use-rag-practice/docs/`).
+> 프로젝트 **바깥**에 있는 파일은 `docs/` 로 옮기기 전까지 검색되지 않습니다.
 
 ### 3. 대화 실행
 
@@ -205,7 +219,10 @@ export VOYAGE_API_KEY="pa-..."
 
 ### 3. 내 문서 준비
 
-`docs/` 폴더에 검색할 텍스트 파일을 넣습니다. 평문 `.md`/`.txt`가 가장 쉽고, 수십~수백 조각이면 충분합니다 (벡터 DB 없이 메모리 처리).
+검색 대상은 **프로젝트 루트의 `docs/` 폴더**입니다. 여기에 넣은 텍스트 파일만 `search_docs` 가 검색합니다.
+평문 `.md`/`.txt`가 가장 쉽고, 수십~수백 조각이면 충분합니다 (벡터 DB 없이 메모리 처리).
+
+`docs/` 의 내용을 추가·수정·삭제하면 **반드시 `ingest` 를 다시 실행**해야 색인(`index/embeddings.json`)에 반영됩니다. 색인하지 않은 파일이나 프로젝트 바깥의 파일은 검색되지 않습니다.
 
 ### 4. 인덱스 생성 (준비 1회)
 
