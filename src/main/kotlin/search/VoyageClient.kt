@@ -2,6 +2,7 @@ package search
 
 import kotlinx.serialization.Serializable
 import model.json
+import util.Env
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -16,8 +17,7 @@ import java.time.Duration
  * - input_type: "document"(색인) / "query"(검색) 로 구분해 정확도 향상
  */
 class VoyageClient(
-    private val apiKey: String = System.getenv("VOYAGE_API_KEY")
-        ?: error("VOYAGE_API_KEY 환경변수가 설정되지 않았습니다."),
+    private val apiKey: String = Env.require("VOYAGE_API_KEY"),
     private val model: String = "voyage-3",
 ) {
     private val http = OkHttpClient.Builder()

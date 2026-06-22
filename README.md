@@ -16,7 +16,7 @@ cd /path/to/LLM-tool-use-rag-practice
 
 실행 방식은 두 가지입니다.
 - **A. `./gradlew run`** — 별도 빌드 없이 바로 실행. `.env` 의 키가 자동 주입됨. (가장 간단)
-- **B. `java -jar`** — jar 로 빌드해두면 gradle 없이 빠르게 실행. 단 키는 셸 환경변수(`export`)로 설정해야 함.
+- **B. `java -jar`** — jar 로 빌드해두면 gradle 없이 빠르게 실행. 이 방식도 `.env` 를 자동으로 읽음.
 
 아래 1~4단계는 방식 A 기준이며, jar 실행은 5단계 참고.
 
@@ -69,14 +69,9 @@ gradle 없이 빠르게 실행하고 싶을 때. 먼저 jar 를 빌드합니다 
 # 산출물: build/libs/hybrid-assistant.jar
 ```
 
-jar 는 `.env` 를 자동으로 읽지 않으므로, **키를 셸 환경변수로 export** 합니다.
+키는 1단계의 `.env` 를 그대로 사용합니다 (jar 도 프로젝트 루트의 `.env` 를 자동으로 읽음). 셸에 `export` 가 있으면 그게 우선합니다.
 
-```bash
-export ANTHROPIC_API_KEY="sk-ant-..."
-export VOYAGE_API_KEY="pa-..."
-```
-
-그다음 모드를 인자로 넘겨 실행합니다. (ingest 산출물 `index/embeddings.json` 을 찾으려면 **프로젝트 루트에서 실행**)
+그다음 모드를 인자로 넘겨 실행합니다. (`.env` 와 ingest 산출물 `index/embeddings.json` 을 찾으려면 **프로젝트 루트에서 실행**)
 
 ```bash
 java -jar build/libs/hybrid-assistant.jar ingest   # 색인
@@ -86,8 +81,8 @@ java -jar build/libs/hybrid-assistant.jar eval      # 평가
 
 > **주의**
 > - `chat`/`eval` 전에 반드시 `ingest` 를 먼저 실행해야 합니다 (색인이 없으면 `search_docs` 가 실패).
-> - `.env` 자동 주입은 방식 A(`./gradlew run`)에만 적용됩니다. 방식 B(`java -jar`)는 셸 환경변수(`export`)로 키를 설정하세요.
-> - `java -jar` 는 색인 파일을 상대경로(`index/embeddings.json`)로 찾으므로 프로젝트 루트에서 실행하세요.
+> - `.env` 자동 로딩은 방식 A·B 모두 적용됩니다. (셸 `export` 가 있으면 우선)
+> - `java -jar` 는 `.env`·색인 파일을 상대경로로 찾으므로 프로젝트 루트에서 실행하세요.
 
 ---
 

@@ -13,3 +13,4 @@ index/embeddings.json
 # IDE
 .idea/
 *.iml
+.vscode/

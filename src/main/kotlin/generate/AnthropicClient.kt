@@ -5,6 +5,7 @@ import model.CreateMessageRequest
 import model.Message
 import model.MessageResponse
 import model.json
+import util.Env
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -19,8 +20,7 @@ import java.time.Duration
  * - 모델: claude-haiku-4-5-20251001 (Haiku 4.5 — effort/thinking 미지원이라 단순 호출)
  */
 class AnthropicClient(
-    private val apiKey: String = System.getenv("ANTHROPIC_API_KEY")
-        ?: error("ANTHROPIC_API_KEY 환경변수가 설정되지 않았습니다."),
+    private val apiKey: String = Env.require("ANTHROPIC_API_KEY"),
     private val model: String = "claude-haiku-4-5-20251001",
     private val maxTokens: Int = 4096,
 ) {

@@ -22,6 +22,21 @@ application {
     mainClass.set("MainKt")
 }
 
+// java -jar 로 단독 실행되도록 의존성을 포함한 fat jar 생성.
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "MainKt"
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from({
+        configurations.runtimeClasspath.get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) }
+    })
+    // 의존성 jar 의 서명 파일이 섞이면 실행 시 SecurityException 이 날 수 있어 제외
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
+}
+
 tasks.named<JavaExec>("run") {
     // 표준 입력으로 질문을 받기 위해 콘솔 연결
     standardInput = System.`in`
